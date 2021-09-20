@@ -33,6 +33,7 @@ def record_handler(output_file_name = "output.wav", timeout = 5, time_per_genera
     elif output_file_name.endswith(".wav"):
         error("[Error] Unsupported Output Type") 
         sys.exit()
+    
     # Control if the file is f
     signal.signal(signal.SIGINT, signal_handler)
 
