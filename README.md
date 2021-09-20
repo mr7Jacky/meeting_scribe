@@ -43,14 +43,15 @@ Options:
 | Name  | Type  | Default | Description |
 | :--- | :--- | :------ | :- |
 | `-h`/`--help` |    |     | Help info|
-| `--outf`| str| "output.wav" |Output filename for recorded audio|
+| `--audio_outf`| str| "output.wav" |Output filename for recorded audio|
+| `--text_outf`| str| "output.txt" |Output filename for translated text|
 |`--tout`| int| 5 |Waiting time for the recorder to stop listening|
 |`--tgen`| int| 10 |Time gap between two consecutive generation of text|
 | `--lang`| str| "en-US" |Audio language|
 
 1. End recording, type `Ctrl+C`, the program will go to end state.
 
-We found a video of (2020 presidential debate on Youtube)[https://www.youtube.com/watch?v=bPiofmZGb8o&t=2131s] as our sample input and we save our sample output audio and text in (here)[./sample_out/].
+We found a video of [2020 presidential debate on Youtube](https://www.youtube.com/watch?v=bPiofmZGb8o&t=2131s) as our sample input and we save our sample output audio and text in [here]()./sample_out/).
 
 ## Dependencies
 
