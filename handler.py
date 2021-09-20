@@ -1,16 +1,10 @@
-# Argument handler
-from os import error
-import sys
-import argparse
 # Speech recognition library
 import speech_recognition as sr
 # Signal handler
 import signal
-# Recording using pyaudio
-import pyaudio
 import wave
 
-from recorder_thd import *
+from recorder import *
 
 # Parameters
 # speech recognition library use single channel 
@@ -35,12 +29,22 @@ def audio_buffer_handler(frames, output_file_name,
     """
     Save recorded audio buffer as wav formatted audio file
     """
+    audio_data = [x.get_raw_data() for _, x in sorted(frames, key=lambda pair: pair[0])]
     wf = wave.open(output_file_name, 'wb')
     wf.setnchannels(CHANNELS)
     wf.setsampwidth(sample_width)
     wf.setframerate(sample_rate)
-    wf.writeframes(b''.join(frames))
+    wf.writeframes(b''.join(audio_data))
     wf.close()
+
+def texts_buffer_handler(texts, output_file_name):
+    """
+    Save generated scripts as txt formatted text file
+    """
+    texts = [x for _, x in sorted(texts, key=lambda pair: pair[0])]
+    with open(output_file_name, "w") as file:
+        for t in texts:
+            file.write(t+'\n')
 
 def record_handler(timeout = 5, time_per_generate = 2, src_lang = "en-US"):
     """
@@ -77,9 +81,4 @@ def record_handler(timeout = 5, time_per_generate = 2, src_lang = "en-US"):
     WIDTH = audio.sample_width
     RATE = audio.sample_rate
 
-    return frames
-
-if __name__=="__main__":
-    record_handler()
-
-
+    return frames, texts

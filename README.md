@@ -50,6 +50,8 @@ Options:
 
 1. End recording, type `Ctrl+C`, the program will go to end state.
 
+We found a video of (2020 presidential debate on Youtube)[https://www.youtube.com/watch?v=bPiofmZGb8o&t=2131s] as our sample input and we save our sample output audio and text in (here)[./sample_out/].
+
 ## Dependencies
 
 1. [PyAudio](https://pypi.org/project/PyAudio/)

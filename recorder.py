@@ -1,55 +1,35 @@
-"""PyAudio example: Record a few seconds of audio and save to a WAVE file."""
-
-from ssl import ALERT_DESCRIPTION_BAD_CERTIFICATE_STATUS_RESPONSE
-import pyaudio
+import threading
 import wave
 import speech_recognition as sr
 
-CHUNK = 1024
-FORMAT = pyaudio.paInt16
-CHANNELS = 2
-RATE = 44100
-RECORD_SECONDS = 15
-WAVE_OUTPUT_FILENAME = "output.wav"
-
-p = pyaudio.PyAudio()
-r = sr.Recognizer()
-
-stream = p.open(format=FORMAT,
-                channels=CHANNELS,
-                rate=RATE,
-                input=True,
-                frames_per_buffer=CHUNK)
-
-print("* recording")
 frames = []
+texts = []
+thread_frame_lock = threading.Lock()
+thread_text_lock = threading.Lock()
 
-for i in range(0, int(RATE / CHUNK * RECORD_SECONDS)):
-    data = stream.read(CHUNK)
-    
-    frames.append(data)
+class RecordThread(threading.Thread):
+    """
+    This class is used to support multithreading in speech recognition
+    Each thread will be used to translate a portion of audio into text
+    """
 
+    def __init__(self, threadID, lang, audio):
+        threading.Thread.__init__(self)
+        self.threadID = threadID
+        self.recognizer = sr.Recognizer()
+        self.lang = lang
+        self.audio_data = audio
 
-
-print("* done recording")
-
-stream.stop_stream()
-stream.close()
-p.terminate()
-
-wf = wave.open(WAVE_OUTPUT_FILENAME, 'wb')
-wf.setnchannels(CHANNELS)
-wf.setsampwidth(p.get_sample_size(FORMAT))
-wf.setframerate(RATE)
-wf.writeframes(b''.join(frames))
-wf.close()
-
-with sr.AudioFile(WAVE_OUTPUT_FILENAME) as source:
-    audio_text = r.listen(source)
-    try:
-        text = r.recognize_google(audio_text)
-        print(text)
-    except:
-        print("failed")
-# audio_data = sr.AudioData(b''.join(frames), sample_rate=RATE, sample_width=p.get_sample_size(FORMAT))
-# print(r.recognize_google(audio_data, show_all=True))
+    def run(self):
+        thread_frame_lock.acquire()
+        frames.append((self.threadID, self.audio_data))
+        thread_frame_lock.release()
+        try:
+            text = self.recognizer.recognize_google(
+                self.audio_data, language=self.lang)
+            thread_text_lock.acquire()
+            texts.append((self.threadID, text))
+            thread_text_lock.release()
+            print(text)
+        except sr.UnknownValueError:
+            print("failed")
