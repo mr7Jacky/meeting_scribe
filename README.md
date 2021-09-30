@@ -58,3 +58,4 @@ We found a video of [2020 presidential debate on Youtube](https://www.youtube.co
 1. [PyAudio](https://pypi.org/project/PyAudio/)
 2. [Speech Recognition Library](https://pypi.org/project/SpeechRecognition/)
 3. [PulseAudio Volume Control](https://freedesktop.org/software/pulseaudio/pavucontrol/)
+4. [chrome extension](https://thoughtbot.com/blog/how-to-make-a-chrome-extension)
